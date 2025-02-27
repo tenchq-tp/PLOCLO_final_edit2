@@ -1,0 +1,175 @@
+CREATE TABLE `clo` (
+  `CLO_id` int NOT NULL AUTO_INCREMENT,
+  `CLO_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `CLO_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `CLO_engname` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `timestamp` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`CLO_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `course` (
+  `course_id` int NOT NULL,
+  `course_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `course_engname` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`course_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `plo` (
+  `PLO_id` int NOT NULL AUTO_INCREMENT,
+  `PLO_code` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `PLO_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `PLO_engname` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`PLO_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `program` (
+  `program_id` int NOT NULL AUTO_INCREMENT,
+  `program_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`program_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `role` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `role` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `section` (
+  `section_id` int NOT NULL AUTO_INCREMENT,
+  `section_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`section_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `semester` (
+  `semester_id` int NOT NULL AUTO_INCREMENT,
+  `semester_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `Timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`semester_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `course_clo` (
+  `course_clo_id` int NOT NULL AUTO_INCREMENT,
+  `course_id` int NOT NULL,
+  `clo_id` int NOT NULL,
+  `semester_id` int NOT NULL,
+  `section_id` int NOT NULL,
+  `year` int DEFAULT NULL,
+  PRIMARY KEY (`course_clo_id`),
+  KEY `course_id` (`course_id`),
+  KEY `clo_id` (`clo_id`),
+  KEY `semester_id` (`semester_id`),
+  KEY `section_id` (`section_id`),
+  CONSTRAINT `course_clo_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON DELETE CASCADE,
+  CONSTRAINT `course_clo_ibfk_2` FOREIGN KEY (`clo_id`) REFERENCES `clo` (`CLO_id`) ON DELETE CASCADE,
+  CONSTRAINT `course_clo_ibfk_3` FOREIGN KEY (`semester_id`) REFERENCES `semester` (`semester_id`) ON DELETE CASCADE,
+  CONSTRAINT `course_clo_ibfk_4` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `course_plo` (
+  `course_plo_id` int NOT NULL AUTO_INCREMENT,
+  `weight` int NOT NULL,
+  `plo_id` int NOT NULL,
+  `course_id` int NOT NULL,
+  PRIMARY KEY (`course_plo_id`),
+  KEY `plo_id` (`plo_id`),
+  KEY `course_id` (`course_id`),
+  CONSTRAINT `course_plo_ibfk_1` FOREIGN KEY (`plo_id`) REFERENCES `plo` (`PLO_id`),
+  CONSTRAINT `course_plo_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `plo_clo` (
+  `PLO_CLO_id` int NOT NULL AUTO_INCREMENT,
+  `year` int NOT NULL,
+  `weight` int NOT NULL,
+  `semester_id` int DEFAULT NULL,
+  `course_id` int DEFAULT NULL,
+  `section_id` int DEFAULT NULL,
+  `PLO_id` int NOT NULL,
+  `CLO_id` int NOT NULL,
+  PRIMARY KEY (`PLO_CLO_id`),
+  KEY `semester_id` (`semester_id`),
+  KEY `course_id` (`course_id`),
+  KEY `section_id` (`section_id`),
+  KEY `PLO_id` (`PLO_id`),
+  KEY `CLO_id` (`CLO_id`),
+  CONSTRAINT `plo_clo_ibfk_1` FOREIGN KEY (`semester_id`) REFERENCES `semester` (`semester_id`),
+  CONSTRAINT `plo_clo_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`),
+  CONSTRAINT `plo_clo_ibfk_3` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`),
+  CONSTRAINT `plo_clo_ibfk_4` FOREIGN KEY (`PLO_id`) REFERENCES `plo` (`PLO_id`),
+  CONSTRAINT `plo_clo_ibfk_5` FOREIGN KEY (`CLO_id`) REFERENCES `clo` (`CLO_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `program_course` (
+  `program_course_id` int NOT NULL AUTO_INCREMENT,
+  `year` int NOT NULL,
+  `semester_id` int NOT NULL,
+  `course_id` int NOT NULL,
+  `section_id` int NOT NULL,
+  `program_id` int NOT NULL,
+  PRIMARY KEY (`program_course_id`),
+  KEY `semester_id` (`semester_id`),
+  KEY `course_id` (`course_id`),
+  KEY `section_id` (`section_id`),
+  KEY `fk_program_id` (`program_id`),
+  CONSTRAINT `program_course_ibfk_1` FOREIGN KEY (`semester_id`) REFERENCES `semester` (`semester_id`),
+  CONSTRAINT `program_course_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`),
+  CONSTRAINT `program_course_ibfk_3` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `program_plo` (
+  `program_PLO_id` int NOT NULL AUTO_INCREMENT,
+  `program_id` int NOT NULL,
+  `plo_id` int NOT NULL,
+  PRIMARY KEY (`program_PLO_id`),
+  KEY `program_id` (`program_id`),
+  KEY `plo_id` (`plo_id`),
+  CONSTRAINT `program_plo_ibfk_1` FOREIGN KEY (`program_id`) REFERENCES `program` (`program_id`) ON DELETE CASCADE,
+  CONSTRAINT `program_plo_ibfk_2` FOREIGN KEY (`plo_id`) REFERENCES `plo` (`PLO_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `studentdata` (
+  `student_id` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `course` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`student_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `assignments` (
+  `assignment_id` int NOT NULL AUTO_INCREMENT,
+  `program` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `course_name` varchar(30) COLLATE utf8mb4_general_ci NOT NULL,
+  `section_id` int NOT NULL,
+  `semester_id` int NOT NULL,
+  `year` int NOT NULL,
+  `assignment_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`assignment_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `assignments_students` (
+  `student_id` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `assignment_id` int NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`student_id`,`assignment_id`),
+  KEY `FK_assignments_students_assignment` (`assignment_id`),
+  CONSTRAINT `FK_assignments_students_assignment` FOREIGN KEY (`assignment_id`) REFERENCES `assignments` (`assignment_id`),
+  CONSTRAINT `FK_assignments_students_student` FOREIGN KEY (`student_id`) REFERENCES `studentdata` (`student_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `assignment_clo_selection` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `student_id` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `clo_id` int NOT NULL,
+  `assignment_id` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `score` int DEFAULT NULL,
+  `weight` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO semester(semester_id, semester_name)
+VALUES (1,'ภาคเรียนที่ 1'),(2,'ภาคเรียนที่ 2'),(3,'ภาคเรียนที่3'),(4,'ภาคเรียนที่ 4');
