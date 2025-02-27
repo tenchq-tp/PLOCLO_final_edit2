@@ -173,3 +173,6 @@ CREATE TABLE `assignment_clo_selection` (
 
 INSERT INTO semester(semester_id, semester_name)
 VALUES (1,'ภาคเรียนที่ 1'),(2,'ภาคเรียนที่ 2'),(3,'ภาคเรียนที่3'),(4,'ภาคเรียนที่ 4');
+
+INSERT INTO section()
+VALUES (1,NULL);
